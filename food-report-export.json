@@ -1,0 +1,59 @@
+{
+  "foods" : [ {
+    "address" : "Akdeniz/MERSİN",
+    "brand" : "Bonetta",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Pelit Bal Ürünleri-Sezayi SAVAŞ",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sildenafil",
+    "product" : "Epimedyumlu Bitkisel Karışımlı Macun"
+  }, {
+    "address" : "Nilüfer/BURSA ",
+    "brand" : "My Zirol ",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Bitkizane Bitkisel Sağlık ürünleri Ürt. İth. İhr. San.Tic. Ltd. Şti. ",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sildenafil ",
+    "product" : "Herbal Mixture Capsule "
+  }, {
+    "address" : "Nilüfer/BURSA ",
+    "brand" : "Jetplus Maksimum Performans %100 Bitkisel Herbal ",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Bitkizane Bitkisel Sağlık ürünleri Ürt. İth. İhr. San.Tic. Ltd. Şti. ",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sildenafil, Tadalafil",
+    "product" : "Epimedyum Bitkisel Karışımlı Macun"
+  }, {
+    "address" : "Bağcılar/İSTANBUL\nwww.zilvaform.com ",
+    "brand" : "Uygur Life Zilva Kapsül",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Uygur Şifa Doğal Vitamin ve Bitkisel Ürünler-Abdulgaffar TAMUYGUR adına Kaşgarlı Paketleme Muhammedeziz\nKAŞGARLI ",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sibutramin",
+    "product" : "Gıda Takviyesi"
+  }, {
+    "address" : "http://www.wispylife.com/",
+    "brand" : "Wispylife Kapsül",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Ülger Kozmetik adına S.C.C. Grup Teks.Bilişim Hizm.Bitk.Ürn.İnş.Tic. San.Ltd.Şti. ",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sibutramin, Fenformin, Glibenklamid",
+    "product" : "Gıda Takviyesi "
+  }, {
+    "address" : "Üretici: Küçükçekmece\n/İSTANBUL \nDağıtıcı: Yıldırım/BURSA ",
+    "brand" : "S&A 30 Days Naturel Herbal Capsules",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Üretici:Herbalmed Gıda Ür.İmal. Ve Pak.-Erol HAMARAT \nDağıtıcı:HHS Bitkisel ve Sağlık Ürn. Tur.İnş.Teks.Gıda San.ve Tic.A.Ş.",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sibutramin",
+    "product" : "Bitkisel Gıda Takviyesi "
+  }, {
+    "address" : "Üretici: İncirlik/ADANA \nDağıtıcı: Yüreğir/ADANA",
+    "brand" : "PRO DCX",
+    "category" : "TAKVİYE EDİCİ GIDALAR VE BENZERİ ÜRÜNLER",
+    "company" : "Üretici: Profab Kimya Medikal ve Gıda Ltd.Şti. \nDağıtıcı: Bitkideresi Ltd.Şti.",
+    "date" : "23/03/2018",
+    "fraud" : "İlaç Etkin Maddesi/ Sildenafil",
+    "product" : "Siberian Ginsengli Bitkisel Karışım Tablet "
+  } ]
+}
