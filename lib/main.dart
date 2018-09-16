@@ -3,9 +3,9 @@ import 'dart:io' show Platform;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:food_report/constants.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 const String title = 'Hileli ürünler';
 
@@ -43,25 +43,32 @@ class FoodFraudListPage extends StatefulWidget {
 class _FoodFraudState extends State<FoodFraudListPage> {
   DatabaseReference _messagesRef;
   StreamSubscription<Event> _messagesSubscription;
+  AnimatedList animatedList;
+  ListModel _list;
+  List<Food> foodList = List<Food>();
+  SearchBar searchBar;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   @override
   void initState() {
     super.initState();
     // Demonstrates configuring to the database using a file
     // Demonstrates configuring the database directly
-    final FirebaseDatabase database = new FirebaseDatabase(app: widget.app);
-    _messagesRef = database.reference().child('foods');
-    database.reference().child('counter').once().then((DataSnapshot snapshot) {
-      print('Connected to second database and read ${snapshot.value}');
-    });
-    database.setPersistenceEnabled(true);
-    database.setPersistenceCacheSizeBytes(10000000);
-    _messagesRef.limitToLast(10).onChildAdded.listen((Event event) {
-      print('Child added: ${event.snapshot.value}');
-    }, onError: (Object o) {
-      final DatabaseError error = o;
-      print('Error: ${error.code} ${error.message}');
-    });
+    initDatabase();
+
+    _list = ListModel(
+      listKey: _listKey,
+      removedItemBuilder: _buildItem,
+    );
+
+    searchBar = new SearchBar(
+        inBar: false,
+        buildDefaultAppBar: buildAppBar,
+        setState: setState,
+        onChanged: _filterList,
+        onClosed: () {
+          _filterList("");
+        });
   }
 
   @override
@@ -73,17 +80,12 @@ class _FoodFraudState extends State<FoodFraudListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: const Text(title),
-      ),
+      appBar: searchBar.build(context),
       body: new Column(
         children: <Widget>[
           new Flexible(
-            child: new FirebaseAnimatedList(
-              key: new ValueKey<bool>(true),
-              query: _messagesRef,
-              reverse: false,
-              sort: (DataSnapshot a, DataSnapshot b) => b.key.compareTo(a.key),
+            child: new AnimatedList(
+              key: _listKey,
               itemBuilder: _buildItem,
             ),
           ),
@@ -92,36 +94,87 @@ class _FoodFraudState extends State<FoodFraudListPage> {
     );
   }
 
-  Widget _buildItem(BuildContext context, DataSnapshot snapshot,
-      Animation<double> animation, int index) {
-    return new SizeTransition(
-        sizeFactor: animation,
-        child: new Container(
-            decoration: new BoxDecoration(
-                border: new Border.all(color: Colors.blueAccent)),
-            margin: new EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            padding: EdgeInsets.all(4.0),
-            child: Row(children: [
-              Expanded(
-                  child: Column(
-                children: <Widget>[
-                  new ListItemText(
-                      "Firma: ", snapshot.value["company"].toString(), 2),
-                  new ListItemText(
-                      "Marka: ", snapshot.value["brand"].toString(), 1),
-                  new ListItemText(
-                      "Ürun: ", snapshot.value["product"].toString(), 1),
-                  new ListItemText(
-                      "Hile: ", snapshot.value["fraud"].toString(), 1),
-                  new ListItemText("Yayınlanma Tarihi: ",
-                      snapshot.value["date"].toString(), 1),
-                  new ListItemText(
-                      "Adres: ", snapshot.value["address"].toString(), 2),
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-              ))
-            ])));
+  void initDatabase() {
+    final FirebaseDatabase database = new FirebaseDatabase(app: widget.app);
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
+    _messagesRef = database.reference().child('foods');
+    _messagesRef.once().then((DataSnapshot snapshot) {
+      setState(() {});
+      List<dynamic> values = snapshot.value;
+      values.forEach((value) {
+        try {
+          var food = Food(
+              value["company"].toString() ?? "",
+              value["brand"].toString() ?? "",
+              value["product"].toString() ?? "",
+              value["fraud"].toString() ?? "",
+              value["date"].toString() ?? "",
+              value["address"].toString() ?? "");
+          _list.add(food);
+          foodList.add(food);
+        } catch (e) {
+          print(e);
+        }
+      });
+    });
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+        title: const Text(title),
+        actions: [searchBar.getSearchAction(context)]);
+  }
+
+  void _filterList(String filter) {
+    if (filter.length <= 2) {
+      foodList.forEach((food) {
+        if (_list.indexOf(food) < 0) {
+          _list.add(food);
+        }
+      });
+    } else {
+      foodList.forEach((food) {
+        if (food.address.toLowerCase().contains(filter.toLowerCase()) ||
+            food.brand.toLowerCase().contains(filter.toLowerCase()) ||
+            food.company.toLowerCase().contains(filter.toLowerCase()) ||
+            food.fraud.toLowerCase().contains(filter.toLowerCase()) ||
+            food.product.toLowerCase().contains(filter.toLowerCase())) {
+          if (_list.indexOf(food) < 0) {
+            _list.add(food);
+          }
+        } else {
+          if (_list.indexOf(food) >= 0) {
+            _list.removeAt(_list.indexOf(food));
+          }
+        }
+      });
+    }
+  }
+
+  Widget _buildItem(
+      BuildContext context, int index, Animation<double> animation) {
+    Food food = _list[index];
+    return new Container(
+        decoration:
+            new BoxDecoration(border: new Border.all(color: Colors.blueAccent)),
+        margin: new EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+        padding: EdgeInsets.all(4.0),
+        child: Row(children: [
+          Expanded(
+              child: Column(
+            children: <Widget>[
+              new ListItemText("Firma: ", food.company, 2),
+              new ListItemText("Marka: ", food.brand, 1),
+              new ListItemText("Ürun: ", food.product, 1),
+              new ListItemText("Hile: ", food.fraud, 1),
+              new ListItemText("Yayınlanma Tarihi: ", food.date, 1),
+              new ListItemText("Adres: ", food.address, 2),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+          ))
+        ]));
   }
 }
 
@@ -143,4 +196,51 @@ class ListItemText extends RichText {
             maxLines: maxLines,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis);
+}
+
+class ListModel {
+  ListModel({
+    @required this.listKey,
+    @required this.removedItemBuilder,
+  })  : assert(listKey != null),
+        _items = List<Food>();
+
+  final GlobalKey<AnimatedListState> listKey;
+  final dynamic removedItemBuilder;
+  final List<Food> _items;
+
+  AnimatedListState get _animatedList => listKey.currentState;
+
+  void add(Food item) {
+    insert(length, item);
+  }
+
+  void insert(int index, Food item) {
+    _items.insert(index, item);
+    _animatedList.insertItem(index);
+  }
+
+  Food removeAt(int index) {
+    final Food removedItem = _items.removeAt(index);
+    if (removedItem != null) {
+      _animatedList.removeItem(
+        index,
+        (context, animation) => new Container(),
+      );
+    }
+    return removedItem;
+  }
+
+  int get length => _items.length;
+
+  Food operator [](int index) => _items[index];
+
+  int indexOf(Food item) => _items.indexOf(item);
+}
+
+class Food {
+  String company, brand, product, fraud, date, address;
+
+  Food(this.company, this.brand, this.product, this.fraud, this.date,
+      this.address);
 }
