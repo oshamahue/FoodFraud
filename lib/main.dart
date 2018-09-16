@@ -94,53 +94,69 @@ class _FoodFraudState extends State<FoodFraudListPage> {
 
   Widget _buildItem(BuildContext context, DataSnapshot snapshot,
       Animation<double> animation, int index) {
+
+    String firma = snapshot.value["company"].toString();
+    String marka = snapshot.value["brand"].toString();
+    String urun = snapshot.value["product"].toString();
+    String madde = snapshot.value["fraud"].toString();
+    String tarih = snapshot.value["date"].toString();
+    String adres = snapshot.value["address"].toString();
+
     return new SizeTransition(
         sizeFactor: animation,
-        child: new Container(
-            decoration: new BoxDecoration(
-                border: new Border.all(color: Colors.blueAccent)),
-            margin: new EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            padding: EdgeInsets.all(4.0),
-            child: Row(children: [
-              Expanded(
-                  child: Column(
-                children: <Widget>[
-                  new ListItemText(
-                      "Firma: ", snapshot.value["company"].toString(), 2),
-                  new ListItemText(
-                      "Marka: ", snapshot.value["brand"].toString(), 1),
-                  new ListItemText(
-                      "Ürun: ", snapshot.value["product"].toString(), 1),
-                  new ListItemText(
-                      "Hile: ", snapshot.value["fraud"].toString(), 1),
-                  new ListItemText("Yayınlanma Tarihi: ",
-                      snapshot.value["date"].toString(), 1),
-                  new ListItemText(
-                      "Adres: ", snapshot.value["address"].toString(), 2),
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-              ))
-            ])));
-  }
-}
+        child:
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: new Card(
+            elevation: 4.0,
+            child: new Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                 ListTile(
+                   leading: const Icon(Icons.branding_watermark),
+                   title:  Text(
+                       marka,
+                       style: new TextStyle(fontWeight: FontWeight.bold),
+                   ),
+                 ),
+                 ListTile(
+                   leading: const Icon(Icons.remove_shopping_cart),
+                   title:  Text(
+                     urun,
+                     style: new TextStyle(fontWeight: FontWeight.bold),
+                   ),
+                 ),
+                 ListTile(
+                   leading: const Icon(Icons.home),
+                   title:  Text(firma),
+                 ),
+                 ListTile(
+                   leading: const Icon(Icons.healing),
+                   title:  Text(madde),
+                 ),
+                 ListTile(
+                   leading: const Icon(Icons.event),
+                   title:  Text(tarih),
+                 ),
+                 ListTile(
+                   leading: const Icon(Icons.my_location),
+                   title:  Text(adres),
+                 ),
 
-class ListItemText extends RichText {
-  ListItemText(String title, String description, int maxLines)
-      : super(
-            text: new TextSpan(
-              style: new TextStyle(
-                fontSize: 14.0,
-                color: Colors.black,
-              ),
-              children: <TextSpan>[
-                new TextSpan(
-                    text: title,
-                    style: new TextStyle(fontWeight: FontWeight.bold)),
-                new TextSpan(text: description),
+                new ButtonTheme.bar( // make buttons use the appropriate styles for cards
+                  child: new ButtonBar(
+                    children: <Widget>[
+                      new FlatButton(
+                        child: const Text('MAP'),
+                        onPressed: () { /* ... */ },
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            maxLines: maxLines,
-            textAlign: TextAlign.left,
-            overflow: TextOverflow.ellipsis);
+          ),
+        )
+    );
+  }
 }
